@@ -6,6 +6,7 @@ from aiogram.exceptions import TelegramAPIError
 from dotenv import load_dotenv
 from database.db import init_db
 from handlers.catalog import catalog_router
+from handlers.cart import cart_router
 
 
 load_dotenv()
@@ -13,6 +14,7 @@ load_dotenv()
 bot = Bot(token=os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
 dp.include_router(catalog_router)
+dp.include_router(cart_router)
 
 
 CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
