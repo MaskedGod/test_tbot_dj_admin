@@ -1,5 +1,5 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from database.models import Category, Subcategory
+from database.models import Category, Subcategory, Product
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -32,6 +32,28 @@ async def get_subcategories_keyboard(category_id: int, session: AsyncSession):
         keyboard.add(
             InlineKeyboardButton(
                 text=subcategory.name, callback_data=f"subcategory_{subcategory.id}"
+            )
+        )
+    return keyboard
+
+
+async def get_products_keyboard(subcategory_id: int, session: AsyncSession):
+    products = (
+        (
+            await session.execute(
+                Product.__table__.select().where(
+                    Product.subcategory_id == subcategory_id
+                )
+            )
+        )
+        .scalars()
+        .all()
+    )
+    keyboard = InlineKeyboardMarkup(row_width=2)
+    for product in products:
+        keyboard.add(
+            InlineKeyboardButton(
+                text=product.name, callback_data=f"product_{product.id}"
             )
         )
     return keyboard

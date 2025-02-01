@@ -29,3 +29,12 @@ class Product(Base):
     photo_url = Column(String)
     subcategory_id = Column(Integer, ForeignKey("subcategories.id"))
     subcategory = relationship("Subcategory", back_populates="products")
+
+
+class Cart(Base):
+    __tablename__ = "cart"
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"))
+    quantity = Column(Integer, default=1)
+    product = relationship("Product")
