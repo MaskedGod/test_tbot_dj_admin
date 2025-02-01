@@ -38,3 +38,10 @@ class Cart(Base):
     product_id = Column(Integer, ForeignKey("products.id"))
     quantity = Column(Integer, default=1)
     product = relationship("Product")
+
+
+class FAQ(Base):
+    __tablename__ = "faq"
+    id = Column(Integer, primary_key=True)
+    question = Column(String, nullable=False)
+    answer = Column(String, nullable=False)

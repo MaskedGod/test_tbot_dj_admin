@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from database.db import init_db
 from handlers.catalog import catalog_router
 from handlers.cart import cart_router
+from handlers.faq import faq_router
 
 
 load_dotenv()
@@ -15,6 +16,7 @@ bot = Bot(token=os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
 dp.include_router(catalog_router)
 dp.include_router(cart_router)
+dp.include_router(faq_router)
 
 
 CHANNEL_ID = int(os.getenv("CHANNEL_ID"))

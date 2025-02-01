@@ -1,5 +1,5 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from database.models import Category, Subcategory, Product, Cart
+from database.models import Category, Subcategory, Product, Cart, FAQ
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -73,4 +73,14 @@ async def get_cart_keyboard(user_id: int, session: AsyncSession):
             InlineKeyboardButton(text=text, callback_data=f"cart_item_{item.id}")
         )
     keyboard.add(InlineKeyboardButton(text="Оформить заказ", callback_data="checkout"))
+    return keyboard
+
+
+async def get_faq_keyboard(session: AsyncSession):
+    faqs = (await session.execute(FAQ.__table__.select())).scalars().all()
+    keyboard = InlineKeyboardMarkup(row_width=1)
+    for faq in faqs:
+        keyboard.add(
+            InlineKeyboardButton(text=faq.question, callback_data=f"faq_{faq.id}")
+        )
     return keyboard
