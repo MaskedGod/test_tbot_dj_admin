@@ -4,6 +4,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.types import Message
 from aiogram.exceptions import TelegramAPIError
 from dotenv import load_dotenv
+from database.db import init_db
 
 
 load_dotenv()
@@ -46,6 +47,7 @@ async def start(message: Message):
 
 
 async def main():
+    await init_db()
     await dp.start_polling(bot)
 
 
