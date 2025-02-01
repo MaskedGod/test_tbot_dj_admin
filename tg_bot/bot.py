@@ -5,12 +5,14 @@ from aiogram.types import Message
 from aiogram.exceptions import TelegramAPIError
 from dotenv import load_dotenv
 from database.db import init_db
+from handlers.catalog import catalog_router
 
 
 load_dotenv()
 
 bot = Bot(token=os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
+dp.include_router(catalog_router)
 
 
 CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
