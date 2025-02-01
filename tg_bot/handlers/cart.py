@@ -1,8 +1,9 @@
+from datetime import datetime, timezone
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from keyboards.keyboards import get_cart_keyboard
 from database.db import async_session
-from tg_bot.database.models import Cart
+from tg_bot.database.models import Cart, Order
 from utils.payment import create_payment
 
 cart_router = Router()
@@ -81,11 +82,23 @@ async def checkout(callback: CallbackQuery):
             await callback.message.answer("Ваша корзина пуста.")
             return
         total_price = sum(item.product.price * item.quantity for item in cart_items)
-        text = "Ваш заказ:\n"
-        for item in cart_items:
-            product = item.product
-            text += f"{product.name} ({item.quantity} шт.) - {product.price * item.quantity} руб.\n"
-        text += f"\nИтого: {total_price} руб."
+        items_list = [
+            f"{item.product.name} ({item.quantity} шт.) - {item.product.price * item.quantity} руб."
+            for item in cart_items
+        ]
+        items_str = "\n".join(items_list)
+
+        # Сохранение заказа в базу данных
+        new_order = Order(
+            user_id=user_id,
+            items=items_str,
+            total_price=total_price,
+            created_at=datetime.now(timezone.utc),
+        )
+        session.add(new_order)
+        await session.commit()
+
+        text = "Ваш заказ:\n" + items_str + f"\n\nИтого: {total_price} руб."
         await callback.message.answer(text)
 
         confirmation_url, payment_id = create_payment(
