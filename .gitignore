@@ -1,0 +1,6 @@
+__pycache__
+.env
+botvenv/
+djangovenv/
+venv/
+*sketch*.md
